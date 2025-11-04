@@ -11,7 +11,8 @@
     "build:11ty": "eleventy",
     "build:css": "tailwindcss -i src/assets/css/style.css -o _site/assets/css/style.css --minify",
     "sync:r2": "node src/scripts/sync-r2.js",
-    "build:manifest": "node src/scripts/build-gallery-manifest.js"
+    "build:manifest": "node src/scripts/build-gallery-manifest.js",
+    "previews:local": "node src/scripts/generate-local-previews.js"
   },
   "keywords": [],
   "author": "",
