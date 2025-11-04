@@ -4,6 +4,7 @@ _site/
 
 # previews
 src/content/**/*.webp
+src/content/**/*.jpg
 
 # Optional npm cache directory
 .npm
