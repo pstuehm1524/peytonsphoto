@@ -52,3 +52,40 @@ npm run build:manifest
 ```
 
 After the manifest exists you can safely delete the local `src/content/events` and `src/content/portfolio` images from git—the build uses the manifest instead.
+
+## Local previews
+
+When you want to check a batch of images locally (either in `src/content/...` or your staged upload directory) you can generate the matching `_preview.webp` files without touching R2:
+
+```
+npm run previews:local
+```
+
+By default the script looks in the directory defined by `R2_UPLOADS_DIR` (falls back to `uploads`). Use flags to target specific folders:
+
+```
+npm run previews:local -- --dir src/content --type portfolio --folder aviation
+```
+
+Add `--force` when you need to regenerate previews even if the `.webp` already exists.
+
+## Custom image order
+
+If you want tighter control over how photos appear inside a gallery, add an `image_order`
+array to the corresponding entry in `src/content/meta.json`. List filenames (including
+extensions) in your desired sequence:
+
+```json
+{
+  "title": "Aviation Highlights",
+  "folder": "aviation",
+  "image_order": [
+    "DSC_1906.jpg",
+    "cobre.photos-0811-1014-4.jpg",
+    "DSC_0228.jpg"
+  ]
+}
+```
+
+Any files you omit fall back to their existing order after the ones you list. The same
+property works for event galleries as well.
