@@ -25,32 +25,31 @@ eleventyComputed:
       {% endif %}
       - {{ gallery.location }}
     </small>
-  {% endif %}
+{% endif %}
 </div>
 
-{% if gallery.type == "events" %}
-  <section class="gallery flex flex-wrap">
-    {% assign image_index = 0 %}
-    {% for img in gallery.images %}
-      {% unless img.url contains '_preview' %}
-        <div class="gallery-item relative m-0.5">
-          <i class="block bg-zinc-800" style="padding-bottom:{{ img.height | times: 100 | divided_by: img.width }}%"></i>
-          <img
-            src="{{ img.url | replace: '.jpg', '_preview.webp' }}"
-            alt="{{ gallery.title }}"
-            loading="lazy"
-            class="absolute top-0 w-full h-auto object-cover cursor-pointer"
-            onclick="openLightbox('{{ img.url }}', {{ image_index }})"
-            data-width="{{ img.width }}"
-            data-height="{{ img.height }}" />
-        </div>
-        {% assign image_index = image_index | plus: 1 %}
-      {% endunless %}
-    {% endfor %}
-  </section>
+<section class="gallery flex flex-wrap">
+  {% assign image_index = 0 %}
+  {% for img in gallery.images %}
+    {% unless img.url contains '_preview' %}
+      <div class="gallery-item relative m-0.5">
+        <i class="block bg-zinc-800" style="padding-bottom:{{ img.height | times: 100 | divided_by: img.width }}%"></i>
+        <img
+          src="{{ img.url | replace: '.jpg', '_preview.webp' }}"
+          alt="{{ gallery.title }}"
+          loading="lazy"
+          class="absolute top-0 w-full h-auto object-cover cursor-pointer"
+          onclick="openLightbox('{{ img.url }}', {{ image_index }})"
+          data-width="{{ img.width }}"
+          data-height="{{ img.height }}" />
+      </div>
+      {% assign image_index = image_index | plus: 1 %}
+    {% endunless %}
+  {% endfor %}
+</section>
 
-  <style > :root
-  {
+<style>
+  :root {
     --rowHeight: 120;
   }
 
@@ -79,14 +78,12 @@ eleventyComputed:
 
 <script>
     // Store gallery images for navigation
-    const galleryImages = [
-      {% assign image_index = 0 %}
-      {% for img in gallery.images %}
-        {% unless img.url contains '_preview' %}
-          "{{ img.url }}"{% unless forloop.last %},{% endunless %}
-        {% endunless %}
-      {% endfor %}
-    ];
+    const galleryImages = [];
+    {% for img in gallery.images %}
+      {% unless img.url contains '_preview' %}
+        galleryImages.push("{{ img.url }}");
+      {% endunless %}
+    {% endfor %}
 
     function resizeGallery() {
       const items = document.querySelectorAll(".gallery-item img");
@@ -102,34 +99,7 @@ eleventyComputed:
 
     window.addEventListener("resize", resizeGallery);
     window.addEventListener("load", resizeGallery);
-</script>{% else %}
-<!-- Portfolio Gallery (Tailwind masonry style) -->
-<div class="sm:px-20 md:px-32 lg:mx-auto lg:max-w-4xl xl:max-w-6xl">
-  <div class="columns-2 xl:columns-3 gap-1 space-y-1">
-    {% assign image_index = 0 %}
-    {% for img in gallery.images %}
-      <img
-        src="{{ img.url | replace: '.jpg', '_preview.webp' }}"
-        alt="{{ gallery.title }}"
-        width="{{ img.width }}"
-        height="{{ img.height }}"
-        style="aspect-ratio: {{ img.width }}/{{ img.height }};"
-        loading="lazy"
-        class="w-full h-auto cursor-pointer hover:brightness-75 transition-filter duration-200 bg-zinc-900/40"
-        onclick="openLightbox('{{ img.url }}', {{ image_index }})" />
-      {% assign image_index = image_index | plus: 1 %}
-    {% endfor %}
-  </div>
-</div>
-
-<script>
-    // Store gallery images for navigation
-    const galleryImages = [
-      {% for img in gallery.images %}
-        "{{ img.url }}"{% unless forloop.last %},{% endunless %}
-      {% endfor %}
-    ];
-</script>{% endif %}<!-- Enhanced Lightbox with Navigation and Zoom -->
+</script><!-- Enhanced Lightbox with Navigation and Zoom -->
 <div
   id="lightbox"
   class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[9999]"

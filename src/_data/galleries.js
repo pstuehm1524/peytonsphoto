@@ -61,6 +61,49 @@ function buildPublicUrl(key) {
     return `${ASSET_BASE_URL}/${normalizedKey}`;
 }
 
+function applyImageOrder(images, order, context = {}) {
+    if (!Array.isArray(order) || order.length === 0) {
+        return images;
+    }
+
+    const orderPositions = new Map();
+    order.forEach((filename, index) => {
+        if (!orderPositions.has(filename)) {
+            orderPositions.set(filename, index);
+        }
+    });
+
+    const ordered = [];
+    const remainder = [];
+
+    images.forEach(image => {
+        if (orderPositions.has(image.filename)) {
+            ordered.push({ index: orderPositions.get(image.filename), image });
+        } else {
+            remainder.push(image);
+        }
+    });
+
+    ordered.sort((a, b) => a.index - b.index);
+
+    const result = ordered.map(entry => entry.image).concat(remainder);
+
+    if (order.length > 0) {
+        const existing = new Set(images.map(img => img.filename));
+        const missing = order.filter(filename => !existing.has(filename));
+        if (missing.length > 0) {
+            const location = context.folder
+                ? `${context.type || "gallery"}/${context.folder}`
+                : context.type || "gallery";
+            console.warn(
+                `[galleries] image_order references missing file(s) in ${location}: ${missing.join(", ")}`
+            );
+        }
+    }
+
+    return result;
+}
+
 function getImageMeta(filePath, publicPath) {
     if (!imageSize) {
         throw new Error(
@@ -84,20 +127,23 @@ function buildGalleryEntry(type, entry, images, extra = {}) {
         return null;
     }
 
-    const infoByFilename = new Map(images.map(image => [image.filename, image]));
+    const imageOrder = entry.image_order || entry.imageOrder || [];
+    const orderedImages = applyImageOrder(images, imageOrder, { type, folder: entry.folder });
+
+    const infoByFilename = new Map(orderedImages.map(image => [image.filename, image]));
 
     let previewFilename = entry.preview;
     if (previewFilename && !infoByFilename.has(previewFilename)) {
         previewFilename = null;
     }
-    if (!previewFilename && images.length > 0) {
-        previewFilename = images[0].filename;
+    if (!previewFilename && orderedImages.length > 0) {
+        previewFilename = orderedImages[0].filename;
     }
 
     return {
         type,
         path: `/${entry.folder}/`,
-        images,
+        images: orderedImages,
         title: entry.title,
         description: entry.description || "",
         preview: previewFilename
