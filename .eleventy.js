@@ -16,6 +16,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/content/**/*.jpg");
   eleventyConfig.addPassthroughCopy("src/content/**/*.webp");
   eleventyConfig.addPassthroughCopy({ "src/assets/other/contact.vcf": "contact.vcf" });
+  eleventyConfig.addPassthroughCopy({ "src/assets/other/cobre.photos.pkpass": "cobre.photos.pkpass" });
   eleventyConfig.addPassthroughCopy({ "src/assets/favicon": "/" });
 
   return {
