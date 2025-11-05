@@ -15,7 +15,7 @@ module.exports = function (eleventyConfig) {
   // Pass through images
   eleventyConfig.addPassthroughCopy("src/content/**/*.jpg");
   eleventyConfig.addPassthroughCopy("src/content/**/*.webp");
-  eleventyConfig.addPassthroughCopy({ "src/assets/other": "/" });
+  eleventyConfig.addPassthroughCopy({ "src/static/_headers": "_headers" });
   eleventyConfig.addPassthroughCopy({ "src/assets/favicon": "/" });
 
   return {
