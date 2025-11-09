@@ -56,6 +56,16 @@
     ],
     "events": [
         {
+            "title": "🏒 MHL Wildfire vs FCRHL Rec Nets ",
+            "short_title": "MHL vs FCRHL",
+            "description": "Warrenton Fall Classic hockey game between the MHL Wildfire and FCRHL Rec Nets on November 2, 2025.",
+            "preview": "wong-00021-20251017.jpg",
+            "folder": "2025.11.08-warrenton-fall-classic",
+            "date": "2025-11-08",
+            "location": "Warrenton, VA",
+            "visible": true
+        },
+        {
             "title": "✈️ Wings Over North Georgia 2025",
             "short_title": "Wings Over North Georgia",
             "description": "Rome, Georgia's Wings Over North Georgia Airshow 2025.",
