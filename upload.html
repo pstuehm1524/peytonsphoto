@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload</title>
+</head>
+<body>
+  <h1>Upload File</h1>
+  <input type="file" id="fileInput">
+  <button id="uploadBtn">Upload</button>
+  <div id="message"></div>
+
+  <script>
+    const projectRef = "mfojaoazhtoizjbcjbqu";
+
+    async function uploadFile(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch(`https://${projectRef}.functions.supabase.co/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      document.getElementById('message').innerText = JSON.stringify(data);
+    }
+
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return alert("Select a file first!");
+      uploadFile(file);
+    });
+  </script>
+</body>
+</html>

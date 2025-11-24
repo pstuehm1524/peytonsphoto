@@ -144,300 +144,279 @@
 
   <!-- SCRIPT -->
   <script>
-    /************************************************
-     * CONFIG
-     ***********************************************/
-    const SUPABASE_URL = "https://ygnfuztbwsngjihrinlr.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbmZ1enRid3NuZ2ppaHJpbmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5ODUwOTMsImV4cCI6MjA3ODU2MTA5M30.YlKPGDE3hfF9mOIVbUEQQFtN8gwt6L0MOYldH1AOMGw";
+/************************************************
+ * CONFIG
+ ***********************************************/
+const SUPABASE_URL = "https://mfojaoazhtoizjbcjbqu.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mb2phb2F6aHRvaXpqYmNqYnF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NDQ1NjIsImV4cCI6MjA3OTUyMDU2Mn0.ccHGMJlCgSHqgaz9Vd2cEvxUmjol9QgxnbbmzNbF6aw";
 
-    const LOGIN_FUNCTION_URL =
-      "https://ygnfuztbwsngjihrinlr.functions.supabase.co/login";
-    const UPLOAD_FUNCTION_URL =
-      "https://ygnfuztbwsngjihrinlr.functions.supabase.co/upload";
-    const DELETE_FUNCTION_URL =
-      "https://ygnfuztbwsngjihrinlr.functions.supabase.co/delete";
+const LOGIN_FUNCTION_URL =
+  "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/login";
+const UPLOAD_FUNCTION_URL =
+  "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/upload";
+const DELETE_FUNCTION_URL =
+  "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/delete";
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /************************************************
-     * LOAD GALLERIES INTO DROPDOWN
-     ***********************************************/
-    async function loadGalleryList() {
-      const dropdown = document.getElementById("galleryDropdown");
-      dropdown.innerHTML = `<option>Loading...</option>`;
+// Store admin password after login
+let adminPassword = null;
 
-      const { data, error } = await supabase
-        .from("images")
-        .select("gallery")
-        .order("gallery", { ascending: true });
+/************************************************
+ * LOAD GALLERIES INTO DROPDOWN
+ ***********************************************/
+async function loadGalleryList() {
+  const dropdown = document.getElementById("galleryDropdown");
+  dropdown.innerHTML = `<option>Loading...</option>`;
 
-      if (error) {
-        console.error("Error loading galleries:", error);
-        dropdown.innerHTML = `<option value="">Error loading galleries</option>`;
-        return;
-      }
+  const { data, error } = await supabase
+    .from("images")
+    .select("gallery")
+    .order("gallery", { ascending: true });
 
-      // Unique gallery names
-      const unique = [...new Set(data.map(x => x.gallery).filter(Boolean))];
+  if (error) {
+    console.error("Error loading galleries:", error);
+    dropdown.innerHTML = `<option value="">Error loading galleries</option>`;
+    return;
+  }
 
-      if (unique.length === 0) {
-        dropdown.innerHTML = `<option value="">No galleries yet</option>`;
-        return;
-      }
+  const unique = [...new Set(data.map(x => x.gallery).filter(Boolean))];
 
-      dropdown.innerHTML = `<option value="">-- Select gallery --</option>`;
+  if (unique.length === 0) {
+    dropdown.innerHTML = `<option value="">No galleries yet</option>`;
+    return;
+  }
 
-      unique.forEach(g => {
-        dropdown.innerHTML += `<option value="${g}">${g}</option>`;
-      });
+  dropdown.innerHTML = `<option value="">-- Select gallery --</option>`;
+  unique.forEach(g => {
+    dropdown.innerHTML += `<option value="${g}">${g}</option>`;
+  });
+  dropdown.innerHTML += `<option value="__new__">➕ Create New Gallery</option>`;
+}
 
-      dropdown.innerHTML += `<option value="__new__">➕ Create New Gallery</option>`;
-    }
+/************************************************
+ * LOGIN HANDLER
+ ***********************************************/
+const loginButton = document.getElementById("loginButton");
+const passwordInput = document.getElementById("passwordInput");
+const loginError = document.getElementById("loginError");
+const loginSection = document.getElementById("loginSection");
+const adminPanel = document.getElementById("adminPanel");
 
-    /************************************************
-     * LOGIN HANDLER
-     ***********************************************/
-    const loginButton = document.getElementById("loginButton");
-    const passwordInput = document.getElementById("passwordInput");
-    const loginError = document.getElementById("loginError");
-    const loginSection = document.getElementById("loginSection");
-    const adminPanel = document.getElementById("adminPanel");
+loginButton.addEventListener("click", doLogin);
+passwordInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") doLogin();
+});
 
-    loginButton.addEventListener("click", doLogin);
-    passwordInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") doLogin();
+async function doLogin() {
+  const pass = passwordInput.value.trim();
+  loginError.classList.add("hidden");
+
+  if (!pass) {
+    loginError.textContent = "Please enter the admin password.";
+    loginError.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const res = await fetch(LOGIN_FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ password: pass }),
     });
 
-    async function doLogin() {
-      const pass = passwordInput.value.trim();
+    const data = await res.json();
+    console.log("Login response:", data);
 
-      // Hide previous error
-      loginError.classList.add("hidden");
-
-      if (!pass) {
-        loginError.textContent = "Please enter the admin password.";
-        loginError.classList.remove("hidden");
-        return;
-      }
-
-      try {
-        const res = await fetch(LOGIN_FUNCTION_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`, // required by platform
-          },
-          body: JSON.stringify({ password: pass }),
-        });
-
-        const data = await res.json();
-        console.log("Login response:", data);
-
-        if (!data || !data.success) {
-          loginError.textContent = data?.error || "Incorrect password.";
-          loginError.classList.remove("hidden");
-          return;
-        }
-
-        // SUCCESS
-        loginSection.classList.add("hidden");
-        adminPanel.classList.remove("hidden");
-        loginError.classList.add("hidden");
-
-        // 🔹 Load galleries + images once logged in
-        await loadGalleryList();
-        await loadDeleteTable();
-      } catch (err) {
-        console.error("Login error:", err);
-        loginError.textContent = "Network error. Please try again.";
-        loginError.classList.remove("hidden");
-      }
+    if (!data || !data.success) {
+      loginError.textContent = data?.error || "Incorrect password.";
+      loginError.classList.remove("hidden");
+      return;
     }
 
-    /************************************************
-     * UPLOAD HANDLER
-     ***********************************************/
-    const uploadForm = document.getElementById("uploadForm");
-    const galleryInput = document.getElementById("galleryInput");
-    const titleInput = document.getElementById("titleInput");
-    const fileInput = document.getElementById("fileInput");
-    const previewSection = document.getElementById("previewSection");
-    const previewImage = document.getElementById("previewImage");
-    const imageUrlEl = document.getElementById("imageUrl");
-    const galleryDropdown = document.getElementById("galleryDropdown");
+    // SUCCESS: save password for later
+    adminPassword = pass;
 
-    uploadForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    loginSection.classList.add("hidden");
+    adminPanel.classList.remove("hidden");
 
-      // ✅ New gallery selection logic
-      let gallery = galleryDropdown.value;
-      const manualGallery = galleryInput.value.trim();
+    await loadGalleryList();
+    await loadDeleteTable();
+  } catch (err) {
+    console.error("Login error:", err);
+    loginError.textContent = "Network error. Please try again.";
+    loginError.classList.remove("hidden");
+  }
+}
 
-      if (gallery === "__new__" && manualGallery) {
-        gallery = manualGallery;
-      }
+/************************************************
+ * UPLOAD HANDLER
+ ***********************************************/
+const uploadForm = document.getElementById("uploadForm");
+const galleryInput = document.getElementById("galleryInput");
+const titleInput = document.getElementById("titleInput");
+const fileInput = document.getElementById("fileInput");
+const previewSection = document.getElementById("previewSection");
+const previewImage = document.getElementById("previewImage");
+const imageUrlEl = document.getElementById("imageUrl");
+const galleryDropdown = document.getElementById("galleryDropdown");
 
-      if (!gallery) {
-        alert("Please select a gallery or enter a new gallery name.");
-        return;
-      }
+uploadForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const title = titleInput.value.trim();
-      const file = fileInput.files[0];
+  let gallery = galleryDropdown.value;
+  const manualGallery = galleryInput.value.trim();
 
-      if (!file) {
-        alert("Please choose an image.");
-        return;
-      }
+  if (gallery === "__new__" && manualGallery) {
+    gallery = manualGallery;
+  }
 
+  if (!gallery) {
+    alert("Please select a gallery or enter a new gallery name.");
+    return;
+  }
 
-      const formData = new FormData();
-      formData.append("gallery", gallery);
-      formData.append("title", title);
-      formData.append("image", file);
-      formData.append("admin_password", adminPassword);
+  const title = titleInput.value.trim();
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("Please choose an image.");
+    return;
+  }
 
-      try {
-        const res = await fetch(UPLOAD_FUNCTION_URL, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`, // DO NOT set Content-Type with FormData
-          },
-          body: formData,
-        });
+  const formData = new FormData();
+  formData.append("gallery", gallery);
+  formData.append("title", title);
+  formData.append("image", file);
+  formData.append("admin_password", adminPassword); // use password from login
 
-        const data = await res.json();
-        console.log("Upload response:", data);
-
-        if (!res.ok || !data.success) {
-          alert("Upload failed: " + (data.error || "Unknown error"));
-          return;
-        }
-
-        // Show preview
-        previewSection.classList.remove("hidden");
-        previewImage.src = data.url;
-        imageUrlEl.textContent = data.url;
-
-        // Clear file input
-        fileInput.value = "";
-        titleInput.value = "";
-
-        // Reload table (and dropdown if new gallery was created)
-        await loadDeleteTable();
-        await loadGalleryList();
-      } catch (err) {
-        console.error("Upload error:", err);
-        alert("Upload failed due to network error.");
-      }
+  try {
+    const res = await fetch(UPLOAD_FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: formData,
     });
 
-    /************************************************
-     * LOAD DELETE TABLE
-     ***********************************************/
-    async function loadDeleteTable() {
-      console.log("Loading delete table...");
-      const { data: images, error } = await supabase
-        .from("images")
-        .select("*")
-        .order("sort_order", { ascending: true });
+    const data = await res.json();
+    console.log("Upload response:", data);
 
-      if (error) {
-        console.error("Error loading images:", error);
-        return;
-      }
-
-      const tbody = document.getElementById("deleteTable");
-      tbody.innerHTML = "";
-
-      if (!images || images.length === 0) {
-        const emptyRow = document.createElement("tr");
-        emptyRow.innerHTML =
-          '<td colspan="5" class="p-4 text-center text-gray-400">No images found.</td>';
-        tbody.appendChild(emptyRow);
-        return;
-      }
-
-      images.forEach((img) => {
-        const storagePath = img.image_url.split("/object/public/images/")[1];
-
-        const tr = document.createElement("tr");
-        tr.className = "border-b border-gray-700";
-
-        tr.innerHTML = `
-          <td class="p-2">${img.id}</td>
-          <td class="p-2">${img.gallery}</td>
-          <td class="p-2">${img.title || ""}</td>
-          <td class="p-2">
-            <img src="${img.image_url}" class="h-16 w-auto rounded object-cover" />
-          </td>
-          <td class="p-2">
-            <button
-              class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
-              data-id="${img.id}"
-              data-path="${storagePath}"
-            >
-              Delete
-            </button>
-          </td>
-        `;
-
-        tbody.appendChild(tr);
-      });
-
-      // Wire delete buttons
-      tbody.querySelectorAll("button[data-id]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const id = parseInt(btn.getAttribute("data-id"), 10);
-          const path = btn.getAttribute("data-path");
-          deleteImage(id, path);
-        });
-      });
+    if (!res.ok || !data.success) {
+      alert("Upload failed: " + (data.error || "Unknown error"));
+      return;
     }
 
-    /************************************************
-     * DELETE IMAGE
-     ***********************************************/
-    async function deleteImage(id, storagePath) {
-      if (!confirm("Delete this image permanently?")) return;
+    // Show preview
+    previewSection.classList.remove("hidden");
+    previewImage.src = data.url;
+    imageUrlEl.textContent = data.url;
 
-      const adminPassword = prompt("Enter admin password to delete:");
-      if (!adminPassword) return;
+    fileInput.value = "";
+    titleInput.value = "";
 
-      try {
-        const res = await fetch(DELETE_FUNCTION_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            id,
-            storagePath,
-            admin_password: adminPassword,
-          }),
-        });
+    await loadDeleteTable();
+    await loadGalleryList();
+  } catch (err) {
+    console.error("Upload error:", err);
+    alert("Upload failed due to network error.");
+  }
+});
 
-        const data = await res.json();
-        console.log("Delete response:", data);
+/************************************************
+ * LOAD DELETE TABLE
+ ***********************************************/
+async function loadDeleteTable() {
+  const { data: images, error } = await supabase
+    .from("images")
+    .select("*")
+    .order("sort_order", { ascending: true });
 
-        if (!res.ok || !data.success) {
-          alert("Delete failed: " + (data.error || "Unknown error"));
-          return;
-        }
+  if (error) {
+    console.error("Error loading images:", error);
+    return;
+  }
 
-        alert("Image deleted.");
-        await loadDeleteTable();
-        await loadGalleryList();
-      } catch (err) {
-        console.error("Delete error:", err);
-        alert("Network error while deleting.");
-      }
+  const tbody = document.getElementById("deleteTable");
+  tbody.innerHTML = "";
+
+  if (!images || images.length === 0) {
+    tbody.innerHTML =
+      '<tr><td colspan="5" class="p-4 text-center text-gray-400">No images found.</td></tr>';
+    return;
+  }
+
+  images.forEach((img) => {
+    const storagePath = img.image_url.split("/object/public/images/")[1];
+
+    const tr = document.createElement("tr");
+    tr.className = "border-b border-gray-700";
+    tr.innerHTML = `
+      <td class="p-2">${img.id}</td>
+      <td class="p-2">${img.gallery}</td>
+      <td class="p-2">${img.title || ""}</td>
+      <td class="p-2">
+        <img src="${img.image_url}" class="h-16 w-auto rounded object-cover" />
+      </td>
+      <td class="p-2">
+        <button class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
+                data-id="${img.id}"
+                data-path="${storagePath}">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll("button[data-id]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = parseInt(btn.getAttribute("data-id"), 10);
+      const path = btn.getAttribute("data-path");
+      deleteImage(id, path);
+    });
+  });
+}
+
+/************************************************
+ * DELETE IMAGE
+ ***********************************************/
+async function deleteImage(id, storagePath) {
+  if (!confirm("Delete this image permanently?")) return;
+
+  if (!adminPassword) {
+    alert("You must be logged in to delete images.");
+    return;
+  }
+
+  try {
+    const res = await fetch(DELETE_FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ id, storagePath, admin_password: adminPassword }),
+    });
+
+    const data = await res.json();
+    console.log("Delete response:", data);
+
+    if (!res.ok || !data.success) {
+      alert("Delete failed: " + (data.error || "Unknown error"));
+      return;
     }
-  </script>
+
+    alert("Image deleted.");
+    await loadDeleteTable();
+    await loadGalleryList();
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Network error while deleting.");
+  }
+}
+</script>
+
 </body>
 </html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delete</title>
+</head>
+<body>
+  <h1>Delete File</h1>
+  <input type="text" id="fileId" placeholder="Enter file ID">
+  <button id="deleteBtn">Delete</button>
+  <div id="message"></div>
+
+  <script>
+    const projectRef = "mfojaoazhtoizjbcjbqu";
+
+    async function deleteFile(fileId) {
+      const res = await fetch(`https://${projectRef}.functions.supabase.co/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: fileId })
+      });
+      const data = await res.json();
+      document.getElementById('message').innerText = JSON.stringify(data);
+    }
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      const fileId = document.getElementById('fileId').value;
+      if (!fileId) return alert("Enter a file ID!");
+      deleteFile(fileId);
+    });
+  </script>
+</body>
+</html>
