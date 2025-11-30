@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GT World Challenge Round 7&8 2025 - Stuart Clarkson Photography</title>
+  <title>West Point Tractor Pull - Peyton S Photography</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -71,9 +71,9 @@
   Lens: Canon EF 70-300 f4-5.6 & Canon EF 24-70 f4
 </p></center>
 
-<!-- Gallery -->
+<!-- Gallery - line 76, 117, and 118 - change these for the name of the page so it works -->
 <main class="flex justify-center items-center min-h-screen">
-  <div id="gtwc2025-gallery"
+  <div id="westpoint-gallery"
        class="grid grid-cols-1 md:grid-cols-3 gap-3 p-10 max-w-[1500px]">
   </div>
 </main>
@@ -90,9 +90,9 @@
 
 <script>
 /* Supabase connection */
-const SUPABASE_URL = "https://ygnfuztbwsngjihrinlr.supabase.co";
+const SUPABASE_URL = "https://mfojaoazhtoizjbcjbqu.supabase.co";
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnbmZ1enRid3NuZ2ppaHJpbmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5ODUwOTMsImV4cCI6MjA3ODU2MTA5M30.YlKPGDE3hfF9mOIVbUEQQFtN8gwt6L0MOYldH1AOMGw";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mb2phb2F6aHRvaXpqYmNqYnF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NDQ1NjIsImV4cCI6MjA3OTUyMDU2Mn0.ccHGMJlCgSHqgaz9Vd2cEvxUmjol9QgxnbbmzNbF6aw";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -114,8 +114,8 @@ async function fetchGalleryImages(gallery) {
 
 /* Render gallery */
 async function renderGallery() {
-  const container = document.getElementById("gtwc2025-gallery");
-  const images = await fetchGalleryImages("gtwc2025");
+  const container = document.getElementById("westpoint-gallery");
+  const images = await fetchGalleryImages("westpoint");
 
   container.innerHTML = images.map(img => `
     <div class="card bg-gray-800 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-all duration-300"
