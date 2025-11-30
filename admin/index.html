@@ -9,15 +9,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
-    body {
-      font-family: "Poppins", sans-serif;
-    }
+    body { font-family: "Poppins", sans-serif; }
   </style>
 </head>
 
@@ -30,26 +25,9 @@
     <div id="loginSection" class="text-center max-w-lg mx-auto mt-10">
       <h1 class="text-3xl font-bold mb-4">Admin Login</h1>
 
-      <input
-        id="passwordInput"
-        type="password"
-        class="px-4 py-2 text-black rounded-lg w-64"
-        placeholder="Enter admin password"
-      />
-
-      <button
-        id="loginButton"
-        class="ml-3 bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-      >
-        Login
-      </button>
-
-      <p
-        id="loginError"
-        class="text-red-400 mt-3 hidden"
-      >
-        Incorrect password. Please try again.
-      </p>
+      <input id="passwordInput" type="password" class="px-4 py-2 text-black rounded-lg w-64" placeholder="Enter admin password" />
+      <button id="loginButton" class="ml-3 bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">Login</button>
+      <p id="loginError" class="text-red-400 mt-3 hidden">Incorrect password. Please try again.</p>
     </div>
 
     <!-- ADMIN PANEL -->
@@ -61,30 +39,21 @@
 
         <form id="uploadForm" class="space-y-4">
 
-          <!-- NEW: Gallery dropdown + manual gallery -->
           <div>
             <label class="block mb-1 font-semibold">Select Existing Gallery</label>
-            <select id="galleryDropdown"
-              class="w-full px-4 py-2 rounded-lg text-black bg-white">
+            <select id="galleryDropdown" class="w-full px-4 py-2 rounded-lg text-black bg-white">
               <option value="">Loading galleries...</option>
             </select>
           </div>
 
           <div class="mt-3">
             <label class="block mb-1 font-semibold">Or Create New Gallery</label>
-            <input id="galleryInput" type="text"
-              class="w-full px-4 py-2 rounded-lg text-black"
-              placeholder="e.g. gtwc2025 (optional)">
+            <input id="galleryInput" type="text" class="w-full px-4 py-2 rounded-lg text-black" placeholder="e.g. page1 (optional)">
           </div>
 
           <div>
             <label class="block mb-1">Title</label>
-            <input
-              id="titleInput"
-              type="text"
-              class="w-full px-4 py-2 rounded-lg text-black"
-              placeholder="Optional"
-            />
+            <input id="titleInput" type="text" class="w-full px-4 py-2 rounded-lg text-black" placeholder="Optional" />
           </div>
 
           <div>
@@ -92,24 +61,13 @@
             <input id="fileInput" type="file" accept="image/*" required />
           </div>
 
-          <button
-            class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg w-full"
-          >
-            Upload
-          </button>
+          <button class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg w-full">Upload</button>
         </form>
 
-        <!-- UPLOAD PREVIEW -->
         <div id="previewSection" class="hidden text-center mt-6">
           <p class="text-lg font-semibold">Upload Successful!</p>
-          <img
-            id="previewImage"
-            class="mt-3 rounded-xl max-h-96 mx-auto shadow-xl"
-          />
-          <p
-            id="imageUrl"
-            class="mt-2 break-all text-purple-400 text-sm"
-          ></p>
+          <img id="previewImage" class="mt-3 rounded-xl max-h-96 mx-auto shadow-xl" />
+          <p id="imageUrl" class="mt-2 break-all text-purple-400 text-sm"></p>
         </div>
       </div>
 
@@ -137,9 +95,7 @@
 
   <!-- FOOTER -->
   <footer class="bg-gray-800 text-center py-4 mt-10">
-    <p class="text-sm text-gray-400">
-      &copy; 2025 Stuart Clarkson Photography. Admin Panel.
-    </p>
+    <p class="text-sm text-gray-400">&copy; 2025 Stuart Clarkson Photography. Admin Panel.</p>
   </footer>
 
   <!-- SCRIPT -->
@@ -148,40 +104,27 @@
      * CONFIG
      ***********************************************/
     const SUPABASE_URL = "https://mfojaoazhtoizjbcjbqu.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mb2phb2F6aHRvaXpqYmNqYnF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NDQ1NjIsImV4cCI6MjA3OTUyMDU2Mn0.ccHGMJlCgSHqgaz9Vd2cEvxUmjol9QgxnbbmzNbF6aw";
+    const SUPABASE_ANON_KEY = "YOUR_ANON_KEY_HERE";
+    const LOGIN_FUNCTION_URL = "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/login";
+    const UPLOAD_FUNCTION_URL = "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/upload";
+    const DELETE_FUNCTION_URL = "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/delete";
 
-    const LOGIN_FUNCTION_URL =
-      "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/login";
-    const UPLOAD_FUNCTION_URL =
-      "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/upload";
-    const DELETE_FUNCTION_URL =
-      "https://mfojaoazhtoizjbcjbqu.functions.supabase.co/delete";
-
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     /************************************************
-     * LOAD GALLERIES INTO DROPDOWN
+     * LOAD GALLERIES
      ***********************************************/
     async function loadGalleryList() {
       const dropdown = document.getElementById("galleryDropdown");
       dropdown.innerHTML = `<option>Loading...</option>`;
 
-      const { data, error } = await supabase
-        .from("images")
-        .select("gallery")
-        .order("gallery", { ascending: true });
+      const { data, error } = await supabase.from("images").select("gallery").order("gallery", { ascending: true });
 
       if (error) {
-        console.error("Error loading galleries:", error);
         dropdown.innerHTML = `<option value="">Error loading galleries</option>`;
         return;
       }
 
-      // Unique gallery names
       const unique = [...new Set(data.map(x => x.gallery).filter(Boolean))];
 
       if (unique.length === 0) {
@@ -190,16 +133,12 @@
       }
 
       dropdown.innerHTML = `<option value="">-- Select gallery --</option>`;
-
-      unique.forEach(g => {
-        dropdown.innerHTML += `<option value="${g}">${g}</option>`;
-      });
-
+      unique.forEach(g => { dropdown.innerHTML += `<option value="${g}">${g}</option>`; });
       dropdown.innerHTML += `<option value="__new__">➕ Create New Gallery</option>`;
     }
 
     /************************************************
-     * LOGIN HANDLER
+     * LOGIN
      ***********************************************/
     const loginButton = document.getElementById("loginButton");
     const passwordInput = document.getElementById("passwordInput");
@@ -208,58 +147,33 @@
     const adminPanel = document.getElementById("adminPanel");
 
     loginButton.addEventListener("click", doLogin);
-    passwordInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") doLogin();
-    });
+    passwordInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
 
     async function doLogin() {
       const pass = passwordInput.value.trim();
-
-      // Hide previous error
       loginError.classList.add("hidden");
 
-      if (!pass) {
-        loginError.textContent = "Please enter the admin password.";
-        loginError.classList.remove("hidden");
-        return;
-      }
+      if (!pass) { loginError.textContent = "Please enter the admin password."; loginError.classList.remove("hidden"); return; }
 
       try {
         const res = await fetch(LOGIN_FUNCTION_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`, // required by platform
-          },
-          body: JSON.stringify({ password: pass }),
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
+          body: JSON.stringify({ password: pass })
         });
 
         const data = await res.json();
-        console.log("Login response:", data);
+        if (!data || !data.success) { loginError.textContent = data?.error || "Incorrect password."; loginError.classList.remove("hidden"); return; }
 
-        if (!data || !data.success) {
-          loginError.textContent = data?.error || "Incorrect password.";
-          loginError.classList.remove("hidden");
-          return;
-        }
-
-        // SUCCESS
         loginSection.classList.add("hidden");
         adminPanel.classList.remove("hidden");
-        loginError.classList.add("hidden");
-
-        // 🔹 Load galleries + images once logged in
         await loadGalleryList();
         await loadDeleteTable();
-      } catch (err) {
-        console.error("Login error:", err);
-        loginError.textContent = "Network error. Please try again.";
-        loginError.classList.remove("hidden");
-      }
+      } catch (err) { loginError.textContent = "Network error. Please try again."; loginError.classList.remove("hidden"); }
     }
 
     /************************************************
-     * UPLOAD HANDLER
+     * UPLOAD
      ***********************************************/
     const uploadForm = document.getElementById("uploadForm");
     const galleryInput = document.getElementById("galleryInput");
@@ -273,128 +187,76 @@
     uploadForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // ✅ New gallery selection logic
       let gallery = galleryDropdown.value;
       const manualGallery = galleryInput.value.trim();
-
-      if (gallery === "__new__" && manualGallery) {
-        gallery = manualGallery;
-      }
-
-      if (!gallery) {
-        alert("Please select a gallery or enter a new gallery name.");
-        return;
-      }
+      if (gallery === "__new__" && manualGallery) gallery = manualGallery;
+      if (!gallery) { alert("Please select a gallery or enter a new gallery name."); return; }
 
       const title = titleInput.value.trim();
       const file = fileInput.files[0];
-
-      if (!file) {
-        alert("Please choose an image.");
-        return;
-      }
-
+      if (!file) { alert("Please choose an image."); return; }
 
       const formData = new FormData();
       formData.append("gallery", gallery);
       formData.append("title", title);
       formData.append("image", file);
 
+      // ✅ THIS IS THE FIX
+      formData.append("admin_password", passwordInput.value.trim());
 
       try {
         const res = await fetch(UPLOAD_FUNCTION_URL, {
           method: "POST",
-          headers: {
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`, // DO NOT set Content-Type with FormData
-          },
-          body: formData,
+          headers: { "Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
+          body: formData
         });
 
         const data = await res.json();
-        console.log("Upload response:", data);
+        if (!res.ok || !data.success) { alert("Upload failed: " + (data.error || "Unknown error")); return; }
 
-        if (!res.ok || !data.success) {
-          alert("Upload failed: " + (data.error || "Unknown error"));
-          return;
-        }
-
-        // Show preview
         previewSection.classList.remove("hidden");
         previewImage.src = data.url;
         imageUrlEl.textContent = data.url;
 
-        // Clear file input
         fileInput.value = "";
         titleInput.value = "";
 
-        // Reload table (and dropdown if new gallery was created)
         await loadDeleteTable();
         await loadGalleryList();
-      } catch (err) {
-        console.error("Upload error:", err);
-        alert("Upload failed due to network error.");
-      }
+      } catch (err) { alert("Upload failed due to network error."); }
     });
 
     /************************************************
-     * LOAD DELETE TABLE
+     * DELETE TABLE
      ***********************************************/
     async function loadDeleteTable() {
-      console.log("Loading delete table...");
-      const { data: images, error } = await supabase
-        .from("images")
-        .select("*")
-        .order("sort_order", { ascending: true });
-
-      if (error) {
-        console.error("Error loading images:", error);
-        return;
-      }
-
+      const { data: images, error } = await supabase.from("images").select("*").order("sort_order", { ascending: true });
       const tbody = document.getElementById("deleteTable");
       tbody.innerHTML = "";
 
       if (!images || images.length === 0) {
-        const emptyRow = document.createElement("tr");
-        emptyRow.innerHTML =
-          '<td colspan="5" class="p-4 text-center text-gray-400">No images found.</td>';
-        tbody.appendChild(emptyRow);
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-400">No images found.</td></tr>';
         return;
       }
 
-      images.forEach((img) => {
+      images.forEach(img => {
         const storagePath = img.image_url.split("/object/public/images/")[1];
-
         const tr = document.createElement("tr");
         tr.className = "border-b border-gray-700";
-
         tr.innerHTML = `
           <td class="p-2">${img.id}</td>
           <td class="p-2">${img.gallery}</td>
           <td class="p-2">${img.title || ""}</td>
+          <td class="p-2"><img src="${img.image_url}" class="h-16 w-auto rounded object-cover" /></td>
           <td class="p-2">
-            <img src="${img.image_url}" class="h-16 w-auto rounded object-cover" />
-          </td>
-          <td class="p-2">
-            <button
-              class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
-              data-id="${img.id}"
-              data-path="${storagePath}"
-            >
-              Delete
-            </button>
-          </td>
-        `;
-
+            <button class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm" data-id="${img.id}" data-path="${storagePath}">Delete</button>
+          </td>`;
         tbody.appendChild(tr);
       });
 
-      // Wire delete buttons
       tbody.querySelectorAll("button[data-id]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const id = parseInt(btn.getAttribute("data-id"), 10);
-          const path = btn.getAttribute("data-path");
-          deleteImage(id, path);
+          deleteImage(parseInt(btn.getAttribute("data-id"), 10), btn.getAttribute("data-path"));
         });
       });
     }
@@ -411,32 +273,17 @@
       try {
         const res = await fetch(DELETE_FUNCTION_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            id,
-            storagePath,
-            admin_password: adminPassword,
-          }),
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
+          body: JSON.stringify({ id, storagePath, admin_password: adminPassword })
         });
 
         const data = await res.json();
-        console.log("Delete response:", data);
-
-        if (!res.ok || !data.success) {
-          alert("Delete failed: " + (data.error || "Unknown error"));
-          return;
-        }
+        if (!res.ok || !data.success) { alert("Delete failed: " + (data.error || "Unknown error")); return; }
 
         alert("Image deleted.");
         await loadDeleteTable();
         await loadGalleryList();
-      } catch (err) {
-        console.error("Delete error:", err);
-        alert("Network error while deleting.");
-      }
+      } catch { alert("Network error while deleting."); }
     }
   </script>
 </body>
